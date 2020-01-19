@@ -5,6 +5,9 @@ OE_HOME_EXT="/$OE_USER/${OE_USER}-server"
 OE_PORT="8072"
 OE_SUPERADMIN="admin"
 OE_CONFIG="${OE_USER}-server"
+OE_DBHOST='localhost'
+OE_DBPORT='5432'
+
 
 #--------------------------------------------------
 # Update Server
@@ -14,6 +17,12 @@ echo -e "\n---- Update Server ----"
 sudo add-apt-repository universe
 sudo apt-get update
 sudo apt-get upgrade -y
+
+#--------------------------------------------------
+# Install PostgreSQL Server
+#--------------------------------------------------
+echo -e "\n---- Install PostgreSQL Server ----"
+sudo apt-get install postgresql -y
 
 #echo -e "\n---- Creating the Eagle12 PostgreSQL User  ----"
 sudo su - postgres -c "createuser -s $OE_USER" 2> /dev/null || true
@@ -30,15 +39,20 @@ sudo chown $OE_USER:$OE_USER /var/log/$OE_USER
 sudo touch /etc/${OE_CONFIG}.conf
 echo -e "* Creating server config file"
 sudo su root -c "printf '[options] \n; This is the password that allows database operations:\n' >> /etc/${OE_CONFIG}.conf"
-sudo su root -c "printf 'db_host = localhost\n' >> /etc/${OE_CONFIG}.conf"
-sudo su root -c "printf 'db_port = 5432\n' >> /etc/${OE_CONFIG}.conf"
+sudo su root -c "printf 'db_host = ${OE_DBHOST}\n' >> /etc/${OE_CONFIG}.conf"
+sudo su root -c "printf 'db_port = ${OE_DBPORT}\n' >> /etc/${OE_CONFIG}.conf"
+
 sudo su root -c "printf 'addons_path=/eagle1266/eagle1266-server/addons,/eagle1266/custom/addons\n' >> /etc/${OE_CONFIG}.conf"
-sudo su root -c "printf 'db_user = eagle1266\n' >> /etc/${OE_CONFIG}.conf"
-sudo su root -c "printf 'db_passwrord = ShaheeN1179\n' >> /etc/${OE_CONFIG}.conf"
+sudo su root -c "printf 'db_user = ${OE_USER}\n' >> /etc/${OE_CONFIG}.conf"
+sudo su root -c "printf 'db_passwrord = ${OE_SUPERADMIN}\n' >> /etc/${OE_CONFIG}.conf"
 
 sudo su root -c "printf 'admin_passwd = ${OE_SUPERADMIN}\n' >> /etc/${OE_CONFIG}.conf"
+
 sudo su root -c "printf 'xmlrpc_port = ${OE_PORT}\n' >> /etc/${OE_CONFIG}.conf"
-sudo su root -c "printf 'logfile = /var/log/eagle1266/eagle1266-server.log\n' >> /etc/${OE_CONFIG}.conf"
+
+sudo su root -c "printf 'logfile = /var/log/${OE_USER}/${OE_CONFIG}.log\n' >> /etc/${OE_CONFIG}.conf"
+
+
 sudo chown $OE_USER:$OE_USER /etc/${OE_CONFIG}.conf
 sudo chmod 640 /etc/${OE_CONFIG}.conf
 
