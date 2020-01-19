@@ -1,8 +1,8 @@
 #!/bin/bash
-OE_USER="eagle1271"
+OE_USER="eagle1272"
 OE_HOME="/$OE_USER"
 OE_HOME_EXT="/$OE_USER/${OE_USER}-server"
-OE_PORT="8071"
+OE_PORT="8072"
 OE_SUPERADMIN="admin"
 OE_CONFIG="${OE_USER}-server"
 
