@@ -28,6 +28,11 @@ sudo apt-get install postgresql -y
 sudo su - postgres -c "createuser -s $OE_USER" 2> /dev/null || true
 echo -e "* Create server config file"
 
+echo -e "\n---- Create Eagle system user ----"
+sudo adduser --system --quiet --shell=/bin/bash --home=$OE_HOME --gecos 'EAGLE1266' --group $OE_USER
+#The user should also be added to the sudo'ers group.
+sudo adduser $OE_USER sudo
+
 #The user should also be added to the sudo'ers group.
 sudo adduser $OE_USER sudo
 
