@@ -38,7 +38,7 @@ sudo su root -c "printf 'db_passwrord = ShaheeN1179\n' >> /etc/${OE_CONFIG}.conf
 
 sudo su root -c "printf 'admin_passwd = ${OE_SUPERADMIN}\n' >> /etc/${OE_CONFIG}.conf"
 sudo su root -c "printf 'xmlrpc_port = ${OE_PORT}\n' >> /etc/${OE_CONFIG}.conf"
-sudo su root -c "printf 'logfile = /var/log/${OE_USER}/${OE_CONFIG}.log\n' >> /etc/${OE_CONFIG}.conf"
+sudo su root -c "printf 'logfile = /var/log/eagle1266/eagle1266-server.log\n' >> /etc/${OE_CONFIG}.conf"
 sudo chown $OE_USER:$OE_USER /etc/${OE_CONFIG}.conf
 sudo chmod 640 /etc/${OE_CONFIG}.conf
 
