@@ -1,8 +1,8 @@
 #!/bin/bash
-OE_USER="eagle1274"
+OE_USER="eagle1275"
 OE_HOME="/$OE_USER"
 OE_HOME_EXT="/$OE_USER/${OE_USER}-server"
-OE_PORT="8074"
+OE_PORT="8075"
 OE_SUPERADMIN="admin"
 OE_CONFIG="${OE_USER}-server"
 OE_DBHOST='localhost'
@@ -29,7 +29,7 @@ sudo su - postgres -c "createuser -s $OE_USER" 2> /dev/null || true
 echo -e "* Create server config file"
 
 echo -e "\n---- Create Eagle system user ----"
-sudo adduser --system --quiet --shell=/bin/bash --home=$OE_HOME --gecos 'EAGLE1274' --group $OE_USER
+sudo adduser --system --quiet --shell=/bin/bash --home=$OE_HOME --gecos 'EAGLE1275' --group $OE_USER
 #The user should also be added to the sudo'ers group.
 sudo adduser $OE_USER sudo
 
@@ -96,3 +96,78 @@ ExecStart=/eagle1266/eagle1266-server/eagle-bin -c /etc/${OE_CONFIG}.conf
 [Install]
 WantedBy=default.target
 
+
+PATH=/bin:/sbin:/usr/bin
+DAEMON=/eagle1266/eagle1266-server/eagle-bin
+NAME=$OE_CONFIG
+DESC=$OE_CONFIG
+# Specify the user name (Default: odoo).
+USER=$OE_USER
+# Specify an alternate config file (Default: /etc/openerp-server.conf).
+CONFIGFILE="/etc/${OE_CONFIG}.conf"
+# pidfile
+PIDFILE=/var/run/\${NAME}.pid
+# Additional options that are passed to the Daemon.
+DAEMON_OPTS="-c \$CONFIGFILE"
+[ -x \$DAEMON ] || exit 0
+[ -f \$CONFIGFILE ] || exit 0
+checkpid() {
+[ -f \$PIDFILE ] || return 1
+pid=\`cat \$PIDFILE\`
+[ -d /proc/\$pid ] && return 0
+return 1
+}
+case "\${1}" in
+start)
+echo -n "Starting \${DESC}: "
+start-stop-daemon --start --quiet --pidfile \$PIDFILE \
+--chuid \$USER --background --make-pidfile \
+--exec \$DAEMON -- \$DAEMON_OPTS
+echo "\${NAME}."
+;;
+stop)
+echo -n "Stopping \${DESC}: "
+start-stop-daemon --stop --quiet --pidfile \$PIDFILE \
+--oknodo
+echo "\${NAME}."
+;;
+restart|force-reload)
+echo -n "Restarting \${DESC}: "
+start-stop-daemon --stop --quiet --pidfile \$PIDFILE \
+--oknodo
+sleep 1
+start-stop-daemon --start --quiet --pidfile \$PIDFILE \
+--chuid \$USER --background --make-pidfile \
+--exec \$DAEMON -- \$DAEMON_OPTS
+echo "\${NAME}."
+;;
+*)
+N=/etc/init.d/\$NAME
+echo "Usage: \$NAME {start|stop|restart|force-reload}" >&2
+exit 1
+;;
+esac
+exit 0
+EOF
+
+echo -e "* Security Init File"
+sudo mv ~/$OE_CONFIG /etc/init.d/$OE_CONFIG
+sudo chmod 755 /etc/init.d/$OE_CONFIG
+sudo chown root: /etc/init.d/$OE_CONFIG
+
+echo -e "* Start Eagle 12 on Startup"
+sudo update-rc.d $OE_CONFIG defaults
+
+echo -e "* Starting Eagle 12 Service"
+sudo su root -c "/etc/init.d/$OE_CONFIG start"
+echo "-----------------------------------------------------------"
+echo "Done! The Eagle 12 server is up and running. Specifications:"
+echo "Port: $OE_PORT"
+echo "User service: $OE_USER"
+echo "User PostgreSQL: $OE_USER"
+echo "Code location: $OE_USER"
+echo "Addons folder: /eagle1266/eagle1266-server/addons/"
+echo "Start Eagle 12 service: sudo service $OE_CONFIG start"
+echo "Stop Eagle 12 service: sudo service $OE_CONFIG stop"
+echo "Restart Eagle 12 service: sudo service $OE_CONFIG restart"
+echo "-----------------------------------------------------------"
