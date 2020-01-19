@@ -10,6 +10,9 @@ OE_CONFIG="${OE_USER}-server"
 sudo su - postgres -c "createuser -s $OE_USER" 2> /dev/null || true
 echo -e "* Create server config file"
 
+
+
+
 sudo touch /etc/${OE_CONFIG}.conf
 echo -e "* Creating server config file"
 sudo su root -c "printf '[options] \n; This is the password that allows database operations:\n' >> /etc/${OE_CONFIG}.conf"
@@ -27,7 +30,7 @@ sudo chmod 640 /etc/${OE_CONFIG}.conf
 
 echo -e "* Create startup file"
 sudo su root -c "echo '#!/bin/sh' >> $OE_HOME_EXT/start.sh"
-sudo su root -c "echo 'sudo -u $OE_USER $OE_HOME_EXT/openerp-server --config=/etc/${OE_CONFIG}.conf' >> $OE_HOME_EXT/start.sh"
+sudo su root -c "echo 'sudo -u eagle1268 eagle1268-server/openerp-server --config=/etc/${OE_CONFIG}.conf' >> $OE_HOME_EXT/start.sh"
 sudo chmod 755 $OE_HOME_EXT/start.sh
 
 #--------------------------------------------------
@@ -49,9 +52,9 @@ cat <<EOF > ~/$OE_CONFIG
 # Description: ODOO Business Applications
 ### END INIT INFO
 PATH=/bin:/sbin:/usr/bin
-DAEMON=/eagle1268/eagle1267-server/odoo-bin
-NAME=eagle1267-server
-DESC=eagle1267-server
+DAEMON=/eagle1268/eagle1268-server/eagle-bin
+NAME=eagle1268-server
+DESC=eagle1268-server
 # Specify the user name (Default: odoo).
 USER=$OE_USER
 # Specify an alternate config file (Default: /etc/openerp-server.conf).
