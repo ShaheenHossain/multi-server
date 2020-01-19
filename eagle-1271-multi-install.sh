@@ -6,11 +6,25 @@ OE_PORT="8071"
 OE_SUPERADMIN="admin"
 OE_CONFIG="${OE_USER}-server"
 
+#--------------------------------------------------
+# Update Server
+#--------------------------------------------------
+echo -e "\n---- Update Server ----"
+# universe package is for Ubuntu 18.x
+sudo add-apt-repository universe
+sudo apt-get update
+sudo apt-get upgrade -y
+
 #echo -e "\n---- Creating the Eagle12 PostgreSQL User  ----"
 sudo su - postgres -c "createuser -s $OE_USER" 2> /dev/null || true
 echo -e "* Create server config file"
 
+#The user should also be added to the sudo'ers group.
+sudo adduser $OE_USER sudo
 
+echo -e "\n---- Create Log directory ----"
+sudo mkdir /var/log/$OE_USER
+sudo chown $OE_USER:$OE_USER /var/log/$OE_USER
 
 
 sudo touch /etc/${OE_CONFIG}.conf
@@ -18,8 +32,8 @@ echo -e "* Creating server config file"
 sudo su root -c "printf '[options] \n; This is the password that allows database operations:\n' >> /etc/${OE_CONFIG}.conf"
 sudo su root -c "printf 'db_host = localhost\n' >> /etc/${OE_CONFIG}.conf"
 sudo su root -c "printf 'db_port = 5432\n' >> /etc/${OE_CONFIG}.conf"
-sudo su root -c "printf 'addons_path=/eagle1268/eagle1268-server/addons,/eagle1268/custom/addons\n' >> /etc/${OE_CONFIG}.conf"
-sudo su root -c "printf 'db_user = eagle1268\n' >> /etc/${OE_CONFIG}.conf"
+sudo su root -c "printf 'addons_path=/eagle1266/eagle1266-server/addons,/eagle1266/custom/addons\n' >> /etc/${OE_CONFIG}.conf"
+sudo su root -c "printf 'db_user = eagle1266\n' >> /etc/${OE_CONFIG}.conf"
 sudo su root -c "printf 'db_passwrord = ShaheeN1179\n' >> /etc/${OE_CONFIG}.conf"
 
 sudo su root -c "printf 'admin_passwd = ${OE_SUPERADMIN}\n' >> /etc/${OE_CONFIG}.conf"
@@ -30,7 +44,7 @@ sudo chmod 640 /etc/${OE_CONFIG}.conf
 
 echo -e "* Create startup file"
 sudo su root -c "echo '#!/bin/sh' >> $OE_HOME_EXT/start.sh"
-sudo su root -c "echo 'sudo -u eagle1268 eagle1268-server/openerp-server --config=/etc/${OE_CONFIG}.conf' >> $OE_HOME_EXT/start.sh"
+sudo su root -c "echo 'sudo -u eagle1266 eagle1266-server/openerp-server --config=/etc/${OE_CONFIG}.conf' >> $OE_HOME_EXT/start.sh"
 sudo chmod 755 $OE_HOME_EXT/start.sh
 
 #--------------------------------------------------
@@ -52,9 +66,9 @@ cat <<EOF > ~/$OE_CONFIG
 # Description: ODOO Business Applications
 ### END INIT INFO
 PATH=/bin:/sbin:/usr/bin
-DAEMON=/eagle1268/eagle1268-server/eagle-bin
-NAME=eagle1268-server
-DESC=eagle1268-server
+DAEMON=/eagle1266/eagle1266-server/eagle-bin
+NAME=eagle1266-server
+DESC=eagle1266-server
 # Specify the user name (Default: odoo).
 USER=$OE_USER
 # Specify an alternate config file (Default: /etc/openerp-server.conf).
@@ -120,7 +134,7 @@ echo "Port: $OE_PORT"
 echo "User service: $OE_USER"
 echo "User PostgreSQL: $OE_USER"
 echo "Code location: $OE_USER"
-echo "Addons folder: /eagle1268/eagle1268-server/addons/"
+echo "Addons folder: /eagle1266/eagle1266-server/addons/"
 echo "Start Eagle 12 service: sudo service $OE_CONFIG start"
 echo "Stop Eagle 12 service: sudo service $OE_CONFIG stop"
 echo "Restart Eagle 12 service: sudo service $OE_CONFIG restart"
