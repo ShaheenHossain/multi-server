@@ -57,8 +57,6 @@ echo -e "* Create server config file"
 sudo touch /etc/${OE_CONFIG}.conf
 echo -e "* Creating server config file"
 sudo su root -c "printf '[options] \n; This is the password that allows database operations:\n' >> /etc/${OE_CONFIG}.conf"
-sudo su root -c "printf 'db_host = ${OE_DBHOST}\n' >> /etc/${OE_CONFIG}.conf"
-sudo su root -c "printf 'db_port = ${OE_DBPORT}\n' >> /etc/${OE_CONFIG}.conf"
 
 # Specify the original database addons path (Default: eagle1266-server.conf).
 
