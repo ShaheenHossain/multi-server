@@ -5,9 +5,7 @@ OE_HOME_EXT="/$OE_USER/${OE_USER}-server"
 OE_PORT="8073"
 OE_SUPERADMIN="admin"
 OE_CONFIG="${OE_USER}-server"
-OE_DBHOST='localhost'
-OE_DBPORT='5432'
-
+OE_VERSION="master"
 
 #--------------------------------------------------
 # Update Server
@@ -40,34 +38,45 @@ echo -e "\n---- Create Log directory ----"
 sudo mkdir /var/log/$OE_USER
 sudo chown $OE_USER:$OE_USER /var/log/$OE_USER
 
+#--------------------------------------------------
+# Install Eagleblank 
+#--------------------------------------------------
+echo -e "\n==== Installing Eagle12 Server ===="
+sudo git clone --depth 1 --branch $OE_VERSION https://github.com/ShaheenHossain/eagleblank $OE_HOME_EXT/
+
+
+echo -e "\n---- Create custom module directory ----"
+sudo su $OE_USER -c "mkdir $OE_HOME/custom"
+sudo su $OE_USER -c "mkdir $OE_HOME/custom/addons"
+
+echo -e "\n---- Setting permissions on home folder ----"
+sudo chown -R $OE_USER:$OE_USER $OE_HOME/*
+
+echo -e "* Create server config file"
 
 sudo touch /etc/${OE_CONFIG}.conf
 echo -e "* Creating server config file"
 sudo su root -c "printf '[options] \n; This is the password that allows database operations:\n' >> /etc/${OE_CONFIG}.conf"
-sudo su root -c "printf 'db_host = ${OE_DBHOST}\n' >> /etc/${OE_CONFIG}.conf"
-sudo su root -c "printf 'db_port = ${OE_DBPORT}\n' >> /etc/${OE_CONFIG}.conf"
+
+# Specify the original database addons path (Default: eagle1266-server.conf).
 
 sudo su root -c "printf 'addons_path=/eagle1266/eagle1266-server/addons,/eagle1266/custom/addons\n' >> /etc/${OE_CONFIG}.conf"
 sudo su root -c "printf 'db_user = ${OE_USER}\n' >> /etc/${OE_CONFIG}.conf"
 sudo su root -c "printf 'db_passwrord = ${OE_SUPERADMIN}\n' >> /etc/${OE_CONFIG}.conf"
-
 sudo su root -c "printf 'admin_passwd = ${OE_SUPERADMIN}\n' >> /etc/${OE_CONFIG}.conf"
-
 sudo su root -c "printf 'xmlrpc_port = ${OE_PORT}\n' >> /etc/${OE_CONFIG}.conf"
-
 sudo su root -c "printf 'logfile = /var/log/${OE_USER}/${OE_CONFIG}.log\n' >> /etc/${OE_CONFIG}.conf"
-
 
 sudo chown $OE_USER:$OE_USER /etc/${OE_CONFIG}.conf
 sudo chmod 640 /etc/${OE_CONFIG}.conf
 
 echo -e "* Create startup file"
 sudo su root -c "echo '#!/bin/sh' >> $OE_HOME_EXT/start.sh"
-sudo su root -c "echo 'sudo -u eagle1266 eagle1266-server/openerp-server --config=/etc/${OE_CONFIG}.conf' >> $OE_HOME_EXT/start.sh"
+sudo su root -c "echo 'sudo -u $OE_USER $OE_HOME_EXT/openerp-server --config=/etc/${OE_CONFIG}.conf' >> $OE_HOME_EXT/start.sh"
 sudo chmod 755 $OE_HOME_EXT/start.sh
 
 #--------------------------------------------------
-# Adding ODOO as a deamon (initscript)
+# Adding EAGLE as a deamon (initscript)
 #--------------------------------------------------
 
 echo -e "* Create init file"
@@ -82,16 +91,21 @@ cat <<EOF > ~/$OE_CONFIG
 # Default-Start: 2 3 4 5
 # Default-Stop: 0 1 6
 # Short-Description: Enterprise Business Applications
-# Description: ODOO Business Applications
+# Description: EAGLE Business Applications
 ### END INIT INFO
+
 PATH=/bin:/sbin:/usr/bin
+
+# Specify the original database name (Default: eagle1266).
 DAEMON=/eagle1266/eagle1266-server/eagle-bin
-NAME=eagle1266-server
-DESC=eagle1266-server
-# Specify the user name (Default: odoo).
+
+NAME=$OE_CONFIG
+DESC=$OE_CONFIG
+# Specify the user name (Default: eagle).
 USER=$OE_USER
 # Specify an alternate config file (Default: /etc/openerp-server.conf).
 CONFIGFILE="/etc/${OE_CONFIG}.conf"
+
 # pidfile
 PIDFILE=/var/run/\${NAME}.pid
 # Additional options that are passed to the Daemon.
@@ -135,6 +149,7 @@ exit 1
 ;;
 esac
 exit 0
+
 EOF
 
 echo -e "* Security Init File"
