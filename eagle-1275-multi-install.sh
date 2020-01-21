@@ -3,7 +3,7 @@ OE_USER="eagle1275"
 OE_HOME="/$OE_USER"
 OE_HOME_EXT="/$OE_USER/${OE_USER}-server"
 OE_PORT="8075"
-OE_SUPERADMIN="${OE_USER}"
+OE_SUPERADMIN="admin"
 OE_CONFIG="${OE_USER}-server"
 OE_VERSION="master"
 
@@ -60,7 +60,7 @@ sudo su root -c "printf '[options] \n; This is the password that allows database
 sudo su root -c "printf 'db_host = ${OE_DBHOST}\n' >> /etc/${OE_CONFIG}.conf"
 sudo su root -c "printf 'db_port = ${OE_DBPORT}\n' >> /etc/${OE_CONFIG}.conf"
 
-sudo su root -c "printf 'addons_path=/eagle1268/eagle1268-server/addons,/eagle1268/custom/addons\n' >> /etc/${OE_CONFIG}.conf"
+sudo su root -c "printf 'addons_path=/eagle1266/eagle1266-server/addons,/eagle1266/custom/addons\n' >> /etc/${OE_CONFIG}.conf"
 sudo su root -c "printf 'db_user = ${OE_USER}\n' >> /etc/${OE_CONFIG}.conf"
 sudo su root -c "printf 'db_passwrord = ${OE_SUPERADMIN}\n' >> /etc/${OE_CONFIG}.conf"
 
@@ -100,7 +100,7 @@ cat <<EOF > ~/$OE_CONFIG
 ### END INIT INFO
 
 PATH=/bin:/sbin:/usr/bin
-DAEMON=/eagle1268/eagle1268-server/eagle-bin
+DAEMON=/eagle1266/eagle1266-server/eagle-bin
 NAME=$OE_CONFIG
 DESC=$OE_CONFIG
 # Specify the user name (Default: eagle).
