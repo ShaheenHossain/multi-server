@@ -1,8 +1,8 @@
 #!/bin/bash
-OE_USER="eagle1275"
+OE_USER="eagle1276"
 OE_HOME="/$OE_USER"
 OE_HOME_EXT="/$OE_USER/${OE_USER}-server"
-OE_PORT="8075"
+OE_PORT="8076"
 OE_SUPERADMIN="admin"
 OE_CONFIG="${OE_USER}-server"
 OE_VERSION="master"
@@ -27,7 +27,7 @@ sudo su - postgres -c "createuser -s $OE_USER" 2> /dev/null || true
 echo -e "* Create server config file"
 
 echo -e "\n---- Create Eagle system user ----"
-sudo adduser --system --quiet --shell=/bin/bash --home=$OE_HOME --gecos 'EAGLE1275' --group $OE_USER
+sudo adduser --system --quiet --shell=/bin/bash --home=$OE_HOME --gecos 'EAGLE1276' --group $OE_USER
 #The user should also be added to the sudo'ers group.
 sudo adduser $OE_USER sudo
 
@@ -60,16 +60,14 @@ sudo su root -c "printf '[options] \n; This is the password that allows database
 sudo su root -c "printf 'db_host = ${OE_DBHOST}\n' >> /etc/${OE_CONFIG}.conf"
 sudo su root -c "printf 'db_port = ${OE_DBPORT}\n' >> /etc/${OE_CONFIG}.conf"
 
+# Specify the original database addons path (Default: eagle1266-server.conf).
+
 sudo su root -c "printf 'addons_path=/eagle1266/eagle1266-server/addons,/eagle1266/custom/addons\n' >> /etc/${OE_CONFIG}.conf"
 sudo su root -c "printf 'db_user = ${OE_USER}\n' >> /etc/${OE_CONFIG}.conf"
 sudo su root -c "printf 'db_passwrord = ${OE_SUPERADMIN}\n' >> /etc/${OE_CONFIG}.conf"
-
 sudo su root -c "printf 'admin_passwd = ${OE_SUPERADMIN}\n' >> /etc/${OE_CONFIG}.conf"
-
 sudo su root -c "printf 'xmlrpc_port = ${OE_PORT}\n' >> /etc/${OE_CONFIG}.conf"
-
 sudo su root -c "printf 'logfile = /var/log/${OE_USER}/${OE_CONFIG}.log\n' >> /etc/${OE_CONFIG}.conf"
-
 
 sudo chown $OE_USER:$OE_USER /etc/${OE_CONFIG}.conf
 sudo chmod 640 /etc/${OE_CONFIG}.conf
@@ -78,7 +76,6 @@ echo -e "* Create startup file"
 sudo su root -c "echo '#!/bin/sh' >> $OE_HOME_EXT/start.sh"
 sudo su root -c "echo 'sudo -u $OE_USER $OE_HOME_EXT/openerp-server --config=/etc/${OE_CONFIG}.conf' >> $OE_HOME_EXT/start.sh"
 sudo chmod 755 $OE_HOME_EXT/start.sh
-
 
 #--------------------------------------------------
 # Adding EAGLE as a deamon (initscript)
@@ -100,7 +97,10 @@ cat <<EOF > ~/$OE_CONFIG
 ### END INIT INFO
 
 PATH=/bin:/sbin:/usr/bin
+
+# Specify the original database name (Default: eagle1266).
 DAEMON=/eagle1266/eagle1266-server/eagle-bin
+
 NAME=$OE_CONFIG
 DESC=$OE_CONFIG
 # Specify the user name (Default: eagle).
