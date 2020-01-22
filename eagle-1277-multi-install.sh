@@ -1,8 +1,8 @@
 #!/bin/bash
-OE_USER="eagle1276"
+OE_USER="eagle1277"
 OE_HOME="/$OE_USER"
 OE_HOME_EXT="/$OE_USER/${OE_USER}-server"
-OE_PORT="8076"
+OE_PORT="8077"
 OE_SUPERADMIN="admin"
 OE_CONFIG="${OE_USER}-server"
 OE_VERSION="master"
@@ -32,7 +32,7 @@ sudo su - postgres -c "createuser -s $OE_USER" 2> /dev/null || true
 echo -e "* Create server config file"
 
 echo -e "\n---- Create Eagle system user ----"
-sudo adduser --system --quiet --shell=/bin/bash --home=$OE_HOME --gecos 'EAGLE1276' --group $OE_USER
+sudo adduser --system --quiet --shell=/bin/bash --home=$OE_HOME --gecos 'EAGLE1277' --group $OE_USER
 #The user should also be added to the sudo'ers group.
 sudo adduser $OE_USER sudo
 
